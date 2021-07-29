@@ -1,4 +1,5 @@
 from commerce.models import *
+from django.utils.timezone import timedelta, datetime, now
 import random
 
 def run():
@@ -44,7 +45,11 @@ def run():
     for i in range(random.randint(5, 10)):
         creado = random.choice(users)
         para = random.choice(list(filter(lambda user: user.id != creado.id, users)))
-        cotizacion = Cotizacion.objects.create(creado=creado, para=para)
+        cotizacion = Cotizacion.objects.create(
+            creado=creado,
+            para=para,
+            fake_date=now() - timedelta(days=random.randint(0, 5)),
+        )
         [cotizacion.formas_de_pago.add(forma) for forma in random.choices(formas_de_pago)]
         cotizacion.save()
         cotizaciones.append(cotizacion)
@@ -65,6 +70,7 @@ def run():
             creado=creado,
             para=para,
             cotizacion=cotizacion,
+            fake_date=now() - timedelta(days=random.randint(0, 5)),
             forma_de_pago=random.choice(formas_de_pago),
         )
 

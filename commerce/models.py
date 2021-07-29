@@ -3,7 +3,7 @@ from django.db.models import ForeignKey, Model
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
 from django.db.models.enums import Choices
-from django.db.models.fields import CharField, FloatField, PositiveSmallIntegerField, SmallIntegerField
+from django.db.models.fields import CharField, DateTimeField, FloatField, PositiveSmallIntegerField, SmallIntegerField
 from django.db.models.fields.related import ManyToManyField
 
 
@@ -26,6 +26,7 @@ class Producto(Model):
         return self.nombre
 
 class Cotizacion(Model):
+    fake_date = DateTimeField()
     creado = ForeignKey(User, CASCADE, related_name='cotizaciones')
     para = ForeignKey(User, CASCADE, related_name='cotizaciones_recibidas')
     formas_de_pago = ManyToManyField(FormaDePago, related_name='cotizaciones')
@@ -41,6 +42,7 @@ class ProductoCotizado(Model):
         return self.nombre
 
 class Venta(Model):
+    fake_date = DateTimeField()
     creado = ForeignKey(User, CASCADE, related_name='ventas')
     para = ForeignKey(User, CASCADE, related_name='ventas_recibidas')
     cotizacion = ForeignKey(Cotizacion, CASCADE, related_name='ventas')
