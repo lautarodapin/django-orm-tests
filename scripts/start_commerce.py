@@ -18,10 +18,17 @@ def run():
         ))
 
     formas_de_pago = []
-    for i in range(10):
+    valores = [5, 10, 15, 20, 0]
+    for valor in valores:
+
         forma_de_pago = FormaDePago.objects.create(
-            valor=random.random() * 20,
-            multiplicador=random.choice([FormaDePago.Multiplicador.positivo.value, FormaDePago.Multiplicador.negativo.value]),
+            valor=valor,
+            multiplicador=FormaDePago.Multiplicador.negativo.value,
+        )
+        formas_de_pago.append(forma_de_pago)
+        forma_de_pago = FormaDePago.objects.create(
+            valor=valor,
+            multiplicador=FormaDePago.Multiplicador.positivo.value,
         )
         formas_de_pago.append(forma_de_pago)
 

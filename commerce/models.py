@@ -15,6 +15,9 @@ class FormaDePago(Model):
     multiplicador = SmallIntegerField(choices=Multiplicador.choices, default=Multiplicador.positivo)
     valor = FloatField()
 
+    class Meta:
+        unique_together = ['multiplicador', 'valor']
+
 class Producto(Model):
     nombre = CharField(max_length=255)
     precio = FloatField()
