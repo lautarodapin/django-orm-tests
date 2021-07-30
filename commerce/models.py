@@ -55,7 +55,10 @@ class CotizacionQueryset(QuerySet):
     productos = GroupConcat('productos__nombre', distinct=True)
     def ranking_productos(self):
         return (
-            self.values('productos__nombre')
+            self
+            .prefetch_related('productos')
+            .select_related('creado')
+            .values('productos__nombre')
             .annotate(
                 cantidad=self.cantidad,
                 total=self.total,
@@ -67,7 +70,10 @@ class CotizacionQueryset(QuerySet):
 
     def ranking_cotizaciones_por_creadores(self):
         return (
-            self.values('creado__username')
+            self
+            .prefetch_related('productos')
+            .select_related('creado')
+            .values('creado__username')
             .annotate(
                 cantidad=self.cantidad,
                 total=self.total,
@@ -80,7 +86,8 @@ class CotizacionQueryset(QuerySet):
 
     def cotizaciones_por_dia(self):
         return (
-            self.annotate(date=TruncDate('fake_date'))
+            self
+            .annotate(date=TruncDate('fake_date'))
             .values('date')
             .annotate(count=self.cantidad)
             .order_by('-date')
