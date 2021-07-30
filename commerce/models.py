@@ -1,10 +1,11 @@
+from typing import Optional
 from django.db import models
 from django.db.models import ForeignKey, Model
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Aggregate, Count, Sum
 from django.db.models.deletion import CASCADE
 from django.db.models.enums import Choices
-from django.db.models.expressions import F, Window
+from django.db.models.expressions import Case, F, Value, When, Window
 from django.db.models.fields import CharField, DateTimeField, FloatField, PositiveSmallIntegerField, SmallIntegerField
 from django.db.models.fields.related import ManyToManyField
 from django.db.models.functions.datetime import TruncDate
@@ -21,6 +22,12 @@ class GroupConcat(Aggregate):
             distinct='DISTINCT ' if distinct else '',
             output_field=CharField(),
             **extra)
+
+class WithChoices(Case):
+    def __init__(self, choices, field, output_field=CharField(), **extra) -> None:
+        whens = [When(**{field: k, 'then': Value(str(v))}) for k, v in dict(choices).items()]
+        super().__init__(*whens, output_field=output_field, **extra)
+
 
 class FormaDePago(Model):
     class Multiplicador(Choices):
