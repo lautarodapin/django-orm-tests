@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'books',
     'commerce',
     'django_extensions',
+    'aldjemy',
 ]
 
 MIDDLEWARE = [

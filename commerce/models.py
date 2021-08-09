@@ -53,6 +53,7 @@ class CotizacionQueryset(QuerySet):
     cantidad = Count('id')
     creadores = GroupConcat('creado__username', distinct=True)
     productos = GroupConcat('productos__nombre', distinct=True)
+
     def ranking_productos(self):
         return (
             self
