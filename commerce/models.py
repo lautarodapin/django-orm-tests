@@ -12,6 +12,7 @@ from django.db.models.functions.datetime import TruncDate
 from django.db.models.functions.window import DenseRank
 from django.db.models.query import QuerySet
 
+from sqlalchemy.ext.hybrid import hybrid_property
 class GroupConcat(Aggregate):
     function = 'GROUP_CONCAT'
     template = '%(function)s(%(distinct)s%(expressions)s)'
@@ -39,6 +40,11 @@ class FormaDePago(Model):
 
     class Meta:
         unique_together = ['multiplicador', 'valor']
+
+    @hybrid_property
+    def extra_multiplicador(self):
+        return self.sa.multiplicador * self.sa.valor
+
 
 class Producto(Model):
     nombre = CharField(max_length=255)
@@ -102,7 +108,7 @@ class Cotizacion(Model):
     para = ForeignKey(User, CASCADE, related_name='cotizaciones_recibidas')
     formas_de_pago = ManyToManyField(FormaDePago, related_name='cotizaciones')
 
-    
+
 
 class ProductoCotizado(Model):
     cotizacion = ForeignKey(Cotizacion, CASCADE, related_name='productos')
@@ -112,6 +118,10 @@ class ProductoCotizado(Model):
 
     def __str__(self) -> str:
         return self.nombre
+
+    @hybrid_property
+    def total(self):
+        return self.sa.precio * self.sa.cantidad
 
 class Venta(Model):
     fake_date = DateTimeField()
